@@ -5,15 +5,21 @@ on:
     branches:
       - master
     paths:
-      - .github/workflows/dag-deploy.yaml
       - dags/**
   workflow_dispatch:
 
-concurrency: ${{ github.ref }}-${{ github.workflow }}
-
 jobs:
-  upload:
-    uses: vuanembi/vuanem-airflow/.github/workflows/dag-deploy.yaml@master
-    secrets: inherit
-    with:
-      path: notification--lark-ceo
+  deploy-dag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Upload DAGs to Composer bucket
+        run: |
+          gsutil cp dags/notification--lark-ceo/*.py gs://vnbi-composer-1/dags/
