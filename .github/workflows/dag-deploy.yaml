@@ -23,4 +23,4 @@ jobs:
 
       - name: Upload DAGs to Composer bucket
         run: |
-          gsutil -m cp -r dags/notification--lark-ceo/*.py gs://vnbi-composer-1/dags/notification--lark-ceo/
+          gsutil -m cp -r dags/notification-lark-ceo/*.py gs://vnbi-composer-1/dags/notification--lark-ceo/
