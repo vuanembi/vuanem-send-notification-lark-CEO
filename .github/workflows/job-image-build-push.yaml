@@ -35,6 +35,7 @@ jobs:
           tags: ${{ env.IMAGE_TAG }}
           context: ./job
           target: production
+          file: ./job/Dockerfile
           push: true
           provenance: false
           cache-from: type=gha
