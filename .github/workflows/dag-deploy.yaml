@@ -6,20 +6,21 @@ on:
       - master
     paths:
       - dags/**
+      - .github/workflows/dag-deploy.yaml
   workflow_dispatch:
 
 jobs:
-  deploy-dag:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: google-github-actions/auth@v2
+      - name: Setup gcloud auth
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - uses: google-github-actions/setup-gcloud@v2
-
       - name: Upload DAGs to Composer bucket
         run: |
-          gsutil cp dags/notification--lark-ceo/*.py gs://vnbi-composer-1/dags/
+          gsutil -m cp -r dags/notification--lark-ceo/*.py gs://vnbi-composer-1/dags/notification--lark-ceo/
