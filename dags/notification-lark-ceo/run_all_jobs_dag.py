@@ -3,9 +3,9 @@ from airflow.operators.bash import BashOperator
 from datetime import datetime, timedelta
 import os
 
-# ============= CONFIG =============
-# Thư mục chứa scripts job (trong Docker image / Git repo của mày)
-JOB_DIR = os.path.join(os.environ.get("AIRFLOW_HOME", "/opt/airflow"), "job")
+# ================= CONFIG =================
+# Thư mục chứa scripts (chính là thư mục hiện tại của file DAG này)
+JOB_DIR = os.path.dirname(__file__)
 
 # Danh sách scripts cần chạy
 SCRIPTS = [
@@ -14,7 +14,7 @@ SCRIPTS = [
     "Top10_cuahang.py"
 ]
 
-# ============= DAG DEFINITION =============
+# ================= DAG DEFINITION =================
 default_args = {
     "owner": "vuanem",
     "depends_on_past": False,
@@ -28,7 +28,7 @@ with DAG(
     dag_id="run_all_jobs_dag",
     default_args=default_args,
     description="Run all sales scripts and push to Lark",
-    schedule_interval="30 8 * * *",  # 8h30 sáng hàng ngày
+    schedule_interval="30 8 * * *",   # chạy 8h30 sáng hàng ngày
     start_date=datetime(2025, 9, 10),
     catchup=False,
     tags=["sales", "lark"],
@@ -37,11 +37,10 @@ with DAG(
     tasks = []
     for script in SCRIPTS:
         task = BashOperator(
-            task_id=f"run_{script.replace('.py','').replace('&','').replace(' ','_')}",
+            task_id=f"run_{script.replace('.py','')}",
             bash_command=f"python {os.path.join(JOB_DIR, script)}"
         )
         tasks.append(task)
 
-    # Chạy tuần tự theo thứ tự trong list
-    for i in range(len(tasks) - 1):
-        tasks[i] >> tasks[i + 1]
+    # Chain theo thứ tự
+    tasks[0] >> tasks[1] >> tasks[2]
