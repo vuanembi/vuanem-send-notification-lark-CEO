@@ -12,7 +12,7 @@ on:
 concurrency: ${{ github.ref }}-${{ github.workflow }}
 
 env:
-  IMAGE_TAG: us-docker.pkg.dev/voltaic-country-280607/docker-1/send-notification-lark-ceo
+  IMAGE_TAG: us-docker.pkg.dev/voltaic-country-280607/docker-1/send-notification-lark-ceo:latest
 
 jobs:
   build-push-image:
@@ -32,11 +32,10 @@ jobs:
 
       - uses: docker/build-push-action@v6
         with:
-          tags: ${{ env.IMAGE_TAG }}
           context: ./job
-          target: production
           file: ./job/Dockerfile
           push: true
+          tags: ${{ env.IMAGE_TAG }}
           provenance: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
