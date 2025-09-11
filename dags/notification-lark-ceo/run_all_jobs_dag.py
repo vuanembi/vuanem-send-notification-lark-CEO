@@ -22,7 +22,7 @@ with DAG(
     run_sales = KubernetesPodOperator(
         task_id="run_Metrics_Sales",
         name="metrics-sales-job",
-        namespace="composer-2-13-1-airflow-2-10-5-8b11d9ce",
+        # namespace="composer-2-13-1-airflow-2-10-5-8b11d9ce",
         image="us-docker.pkg.dev/voltaic-country-280607/docker-1/lark-jobs:latest",
         cmds=["python"],
         arguments=["/Metrics_Sales.py"],
@@ -34,7 +34,7 @@ with DAG(
     run_top10_store = KubernetesPodOperator(
         task_id="run_Top10_cuahang",
         name="top10-store-job",
-        namespace="composer-2-13-1-airflow-2-10-5-8b11d9ce",
+        # namespace="composer-2-13-1-airflow-2-10-5-8b11d9ce",
         image="us-docker.pkg.dev/voltaic-country-280607/docker-1/lark-jobs:latest",
         cmds=["python"],
         arguments=["/Top10_cuahang.py"],
@@ -46,7 +46,7 @@ with DAG(
     run_top10_5 = KubernetesPodOperator(
         task_id="run_Top10_Top5",
         name="top10-top5-job",
-        namespace="composer-2-13-1-airflow-2-10-5-8b11d9ce",
+        # namespace="composer-2-13-1-airflow-2-10-5-8b11d9ce",
         image="us-docker.pkg.dev/voltaic-country-280607/docker-1/lark-jobs:latest",
         cmds=["python"],
         arguments=["/Top10AndTop5.py"],
