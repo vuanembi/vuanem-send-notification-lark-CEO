@@ -13,7 +13,7 @@ CHAT_ID = ["oc_82be130d7f567dc8c91828d6c0fb4bd2"]  # chat_id nhóm
 PROJECT_ID = "voltaic-country-280607"
 
 # 👉 chỉ định file JSON key service account
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"D:\voltaic-country-280607-3ff5e089e0b0.json"
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"D:\voltaic-country-280607-3ff5e089e0b0.json"
 
 # ==== 1. Get tenant access token ====
 resp = requests.post(
