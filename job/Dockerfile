@@ -1,17 +1,20 @@
-# Base image Python
-FROM python:3.10-slim
+# Base image: Airflow official (Composer chạy Python 3.11)
+FROM apache/airflow:2.10.2-python3.11
 
-# Set working directory
-WORKDIR /app
+# Cài đặt system dependencies cần cho matplotlib (font, freetype…)
+USER root
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libfreetype6-dev \
+    libpng-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements trước (để tận dụng cache docker)
-COPY requirements.txt .
+# Copy requirements
+COPY requirements.txt /requirements.txt
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Cài Python libs
+RUN pip install --no-cache-dir -r /requirements.txt
 
-# Copy toàn bộ code vào container
-COPY . .
-
-# Default command (có thể đổi khi chạy job khác)
-CMD ["python", "Metrics_Sales.py"]
+# Đảm bảo quay lại user airflow
+USER airflow
