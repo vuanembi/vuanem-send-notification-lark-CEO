@@ -10,7 +10,7 @@ JOB_DIR = os.path.dirname(__file__)
 # Danh sách scripts cần chạy
 SCRIPTS = [
     "Metrics_Sales.py",
-    "Top10&Top5.py",
+    "Top10AndTop5.py",
     "Top10_cuahang.py"
 ]
 
