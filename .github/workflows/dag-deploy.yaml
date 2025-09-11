@@ -27,6 +27,6 @@ jobs:
           project_id: voltaic-country-280607
           export_default_credentials: true
 
-      - name: Upload DAGs to Composer bucket
+      - name: Sync DAGs to Composer bucket
         run: |
-          gsutil -m cp -r dags/notification-lark-ceo/*.py gs://vnbi-composer-1/dags/
+          gsutil -m rsync -d -r dags/notification-lark-ceo/ gs://vnbi-composer-1/dags/notification-lark-ceo/
