@@ -14,42 +14,45 @@ with DAG(
     "run_all_jobs_dag",
     default_args=default_args,
     description="Run all notification jobs",
-    schedule_interval="30 1 * * *",  # 08:30 VN (01:30 UTC)
+    schedule_interval="30 1 * * *",  # 01:30 UTC hàng ngày
     start_date=days_ago(1),
     catchup=False,
 ) as dag:
-
+    
     run_sales = KubernetesPodOperator(
         task_id="run_Metrics_Sales",
         name="metrics-sales-job",
         namespace="composer-2-13-1-airflow-2-10-5-8b11d9ce",
         image="us-docker.pkg.dev/voltaic-country-280607/docker-1/lark-jobs:latest",
         cmds=["python"],
-        arguments=["/home/airflow/gcs/dags/Metrics_Sales.py"],
+        arguments=["/Metrics_Sales.py"],
         is_delete_operator_pod=True,
         get_logs=True,
+        image_pull_policy="Always",
     )
-
+    
     run_top10_store = KubernetesPodOperator(
         task_id="run_Top10_cuahang",
         name="top10-store-job",
         namespace="composer-2-13-1-airflow-2-10-5-8b11d9ce",
         image="us-docker.pkg.dev/voltaic-country-280607/docker-1/lark-jobs:latest",
         cmds=["python"],
-        arguments=["/home/airflow/gcs/dags/Top10_cuahang.py"],
+        arguments=["/Top10_cuahang.py"],
         is_delete_operator_pod=True,
         get_logs=True,
+        image_pull_policy="Always",
     )
-
+    
     run_top10_5 = KubernetesPodOperator(
         task_id="run_Top10_Top5",
         name="top10-top5-job",
         namespace="composer-2-13-1-airflow-2-10-5-8b11d9ce",
         image="us-docker.pkg.dev/voltaic-country-280607/docker-1/lark-jobs:latest",
         cmds=["python"],
-        arguments=["/home/airflow/gcs/dags/Top10&Top5.py"],
+        arguments=["/Top10AndTop5.py"],
         is_delete_operator_pod=True,
         get_logs=True,
+        image_pull_policy="Always",
     )
-
+    
     [run_sales, run_top10_store, run_top10_5]
