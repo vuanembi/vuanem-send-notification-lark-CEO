@@ -12,7 +12,7 @@ on:
 concurrency: ${{ github.ref }}-${{ github.workflow }}
 
 env:
-  IMAGE_TAG: us-docker.pkg.dev/voltaic-country-280607/docker-1/send-notification-lark-ceo:latest
+  IMAGE_TAG: us-docker.pkg.dev/voltaic-country-280607/docker-1/lark-jobs:latest
 
 jobs:
   build-push-image:
