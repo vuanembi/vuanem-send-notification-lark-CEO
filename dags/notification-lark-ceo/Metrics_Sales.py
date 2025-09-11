@@ -8,7 +8,7 @@ import numpy as np
 # ==== CONFIG ====
 APP_ID = "cli_a630657c81a15010"
 APP_SECRET = "oF4rME28LacN5hnEcoyj8e65UwhyhbLF"
-USER_ID = ["VN0039"]  # User ID của tao: a8cc1a8f
+USER_ID = ["a8cc1a8f"]  # User ID của tao: a8cc1a8f
 CHAT_ID = ["oc_82be130d7f567dc8c91828d6c0fb4bd2"]  # chat_id nhóm
 PROJECT_ID = "voltaic-country-280607"
 
@@ -237,18 +237,18 @@ def upload_and_send_sales_image(filename, description):
         print(f"📩 Send {description} to USER {user_id} response:", resp)
     
     # Gửi cho tất cả CHAT_ID  
-    for chat_id in CHAT_ID:
-        msg = {
-            "receive_id": chat_id,
-            "msg_type": "image",
-            "content": json.dumps({"image_key": image_key})
-        }
-        resp = requests.post(
-            "https://open.larksuite.com/open-apis/im/v1/messages?receive_id_type=chat_id",
-            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"}, 
-            json=msg
-        ).json()
-        print(f"📩 Send {description} to CHAT {chat_id} response:", resp)
+    # for chat_id in CHAT_ID:
+    #     msg = {
+    #         "receive_id": chat_id,
+    #         "msg_type": "image",
+    #         "content": json.dumps({"image_key": image_key})
+    #     }
+    #     resp = requests.post(
+    #         "https://open.larksuite.com/open-apis/im/v1/messages?receive_id_type=chat_id",
+    #         headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"}, 
+    #         json=msg
+    #     ).json()
+    #     print(f"📩 Send {description} to CHAT {chat_id} response:", resp)
 
 # ==== 8. Tạo và gửi 4 ảnh riêng biệt ====
 
