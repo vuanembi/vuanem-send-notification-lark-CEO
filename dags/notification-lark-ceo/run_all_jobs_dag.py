@@ -1,46 +1,55 @@
 from airflow import DAG
-from airflow.operators.bash import BashOperator
-from datetime import datetime, timedelta
-import os
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.utils.dates import days_ago
+from datetime import timedelta
 
-# ================= CONFIG =================
-# Thư mục chứa scripts (chính là thư mục hiện tại của file DAG này)
-JOB_DIR = os.path.dirname(__file__)
-
-# Danh sách scripts cần chạy
-SCRIPTS = [
-    "Metrics_Sales.py",
-    "Top10AndTop5.py",
-    "Top10_cuahang.py"
-]
-
-# ================= DAG DEFINITION =================
 default_args = {
-    "owner": "vuanem",
+    "owner": "airflow",
     "depends_on_past": False,
-    "email_on_failure": False,
-    "email_on_retry": False,
     "retries": 1,
     "retry_delay": timedelta(minutes=5),
 }
 
 with DAG(
-    dag_id="run_all_jobs_dag",
+    "run_all_jobs_dag",
     default_args=default_args,
-    description="Run all sales scripts and push to Lark",
-    schedule_interval="30 8 * * *",   # chạy 8h30 sáng hàng ngày
-    start_date=datetime(2025, 9, 10),
+    description="Run all notification jobs",
+    schedule_interval="30 1 * * *",  # 08:30 VN (01:30 UTC)
+    start_date=days_ago(1),
     catchup=False,
-    tags=["sales", "lark"],
 ) as dag:
 
-    tasks = []
-    for script in SCRIPTS:
-        task = BashOperator(
-            task_id=f"run_{script.replace('.py','')}",
-            bash_command=f"python {os.path.join(JOB_DIR, script)}"
-        )
-        tasks.append(task)
+    run_sales = KubernetesPodOperator(
+        task_id="run_Metrics_Sales",
+        name="metrics-sales-job",
+        namespace="default",
+        image="us-docker.pkg.dev/voltaic-country-280607/docker-1/lark-jobs:latest",
+        cmds=["python"],
+        arguments=["/home/airflow/gcs/dags/Metrics_Sales.py"],
+        is_delete_operator_pod=True,
+        get_logs=True,
+    )
 
-    # Chain theo thứ tự
-    tasks[0] >> tasks[1] >> tasks[2]
+    run_top10_store = KubernetesPodOperator(
+        task_id="run_Top10_cuahang",
+        name="top10-store-job",
+        namespace="default",
+        image="us-docker.pkg.dev/voltaic-country-280607/docker-1/lark-jobs:latest",
+        cmds=["python"],
+        arguments=["/home/airflow/gcs/dags/Top10_cuahang.py"],
+        is_delete_operator_pod=True,
+        get_logs=True,
+    )
+
+    run_top10_5 = KubernetesPodOperator(
+        task_id="run_Top10_Top5",
+        name="top10-top5-job",
+        namespace="default",
+        image="us-docker.pkg.dev/voltaic-country-280607/docker-1/lark-jobs:latest",
+        cmds=["python"],
+        arguments=["/home/airflow/gcs/dags/Top10&Top5.py"],
+        is_delete_operator_pod=True,
+        get_logs=True,
+    )
+
+    [run_sales, run_top10_store, run_top10_5]
