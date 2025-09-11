@@ -49,4 +49,5 @@ jobs:
           tags: ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          no-cache: true
           provenance: false
